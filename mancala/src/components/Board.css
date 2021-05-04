@@ -1,0 +1,40 @@
+.Board {
+    display: flex;
+    color: white;
+    justify-content: center;
+    margin: auto;
+}
+
+.HolesRow {
+    display: grid;
+    grid-template-columns:  1fr 1fr 1fr 1fr 1fr 1fr;
+    grid-template-rows:  1fr 1fr;
+    column-gap: 8px;
+    row-gap: 8px;
+}
+
+.Hole {
+    width: 100px;
+    height: 100px;
+    background-color: rgb(34, 27, 0);
+    display: flex;
+    flex-direction: column;
+}
+
+.users_hole:hover {
+    outline: white solid;
+}
+
+.Hole img {
+    width: 60%;
+    height: 60%;
+    margin: auto;
+}
+
+.Well {
+    width: 100px;
+    height: 200px;
+    margin: 8px;
+    background-color: rgb(34, 27, 0);
+}
+
