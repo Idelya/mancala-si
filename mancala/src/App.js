@@ -10,9 +10,7 @@ function App() {
 
   const [refresh, setRefresh] = useState(0);
   const {
-    playersScore,
-    palyer1,
-    player2
+    playersScore
    } = api.getState();
 
   useSubscribe(

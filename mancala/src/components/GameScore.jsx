@@ -1,6 +1,6 @@
 import "./GameScore.css";
-import { api, useStore, useSubscribe } from '../lib/store';
-import React, { useEffect, useState } from 'react';
+import { api, useSubscribe } from '../lib/store';
+import React, { useState } from 'react';
 
 function ScoreBoard({score, playerType, className, isActive}) {
     return (

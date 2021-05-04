@@ -1,5 +1,5 @@
 
-import { api, useStore, useSubscribe, clearStore } from './store';
+import { api, clearStore } from './store';
 import { cloneDeep, every, sumBy } from "lodash";
 export function startGame() {
     clearStore();

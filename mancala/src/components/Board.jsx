@@ -1,8 +1,8 @@
 import hole_img from "../assets/image_holes.png";
-import { api, useStore, useSubscribe } from '../lib/store';
+import { api, useSubscribe } from '../lib/store';
 import "./Board.css";
 import { pickHole } from "../lib/gameControl.js"
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 function Well({score}){
   return (
     <div className="Well">
@@ -24,7 +24,7 @@ function Hole({rocks, rocksAmount}){
   return (
     <div className={`Hole  ${rocks.playerId===playerIdTurn && rocks.k > 0 && "users_hole"}`} onClick={() => pickHole(rocks)}>
       {rocksAmount}
-      <img src={hole_img} />
+      <img src={hole_img} alt=""/>
     </div>
   );
 }
