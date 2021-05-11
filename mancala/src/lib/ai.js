@@ -5,6 +5,7 @@ import { api } from './store';
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
   }
+// eslint-disable-next-line no-unused-vars
 function pickRandomHole(board, playerID) {
     const n = reduce(board[playerID - 1], function(sum, h) {
         if(h.k > 0) return sum + 1;
