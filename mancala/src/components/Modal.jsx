@@ -4,7 +4,7 @@ export function Modal({ title = '', content, confirmFun, confirmText }) {
     <div className="modal_backdrop">
         <div className="modal_box">
             <h2>{title}</h2>
-            <p>{content}</p>
+            <div>{content}</div>
             <div>
                 <button onClick={confirmFun}>{confirmText}</button>
             </div>

@@ -12,8 +12,7 @@ function ScoreBoard({score, playerType, className, isActive}) {
 
 export function GameScore() {
     const { 
-        player1,
-        player2,
+        playersType
     } = api.getState();
 
     const [playerIdTurn, setPlayerIdTurn] = useState(api.getState().playerIdTurn);
@@ -23,15 +22,14 @@ export function GameScore() {
         ({ playerIdTurn, playersScore }) => {
         setPlayerIdTurn(playerIdTurn);
         setPlayersScore(playersScore);
-        console.log(playerIdTurn)
         },
         ['playerIdTurn', 'playersScore'],
     );
 
     return (
     <div className="">
-        <ScoreBoard score={playersScore[0]} playerType={player1} className="player1" isActive={playerIdTurn === 1}/>
-        <ScoreBoard score={playersScore[1]} playerType={player2} className="player2" isActive={playerIdTurn === 2}/>
+        <ScoreBoard score={playersScore[0]} playerType={playersType[0]} className="player1" isActive={playerIdTurn === 1}/>
+        <ScoreBoard score={playersScore[1]} playerType={playersType[1]} className="player2" isActive={playerIdTurn === 2}/>
     </div>
     );
   }

@@ -7,11 +7,12 @@ import { shallow } from 'zustand/shallow';
 export const [useStore, api] = create(() => {
   return {
     gamestate: 'initial',
-    player1: 'user',
-    player2: 'user',
+    playersType: ['user','user'],
     playersScore: [0, 0],
     playerIdTurn: null,
+    depth: 1,
     board: initBoard(4, 6),
+    gameMode: "UservUser",
     refresh: 0
   };
 });
@@ -20,8 +21,7 @@ export function clearStore() {
   api.setState(() => {
     return({
       gamestate: 'initial',
-      player1: 'user',
-      player2: 'user',
+      playersType: ['user','user'],
       playersScore: [0, 0],
       playerIdTurn: null,
       board: initBoard(4, 6),

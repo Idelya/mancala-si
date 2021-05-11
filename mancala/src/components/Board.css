@@ -21,6 +21,10 @@
     flex-direction: column;
 }
 
+.active {
+    outline: white solid;
+}
+
 .users_hole:hover {
     outline: white solid;
 }

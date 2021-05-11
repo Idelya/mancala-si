@@ -21,8 +21,15 @@ function Hole({rocks, rocksAmount}){
     ['playerIdTurn'],
   );
 
+  const handlePick = () => {
+    if ( api.getState().playersType[api.getState().playerIdTurn - 1] !== 'ai') {
+      pickHole(rocks)
+    }
+  }
+
   return (
-    <div className={`Hole  ${rocks.playerId===playerIdTurn && rocks.k > 0 && "users_hole"}`} onClick={() => pickHole(rocks)}>
+    <div id={`hole-${rocks.playerId}-${rocks.id}`} className={`Hole ${rocks.playerId===playerIdTurn && api.getState().playersType[api.getState().playerIdTurn - 1] !== 'ai' && rocks.k > 0 && "users_hole"}`} 
+      onClick={() => handlePick()}>
       {rocksAmount}
       <img src={hole_img} alt=""/>
     </div>

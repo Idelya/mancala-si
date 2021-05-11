@@ -1,12 +1,15 @@
 
 import { api, clearStore } from './store';
 import { cloneDeep, every, sumBy } from "lodash";
-export function startGame() {
+export function startGame(mode, depth) {
     clearStore();
 
     api.setState(() => ({
         gamestate: "play",
         playerIdTurn: 2,
+        gameMode: mode,
+        depth: depth,
+        playersType: mode === "UservUser" ? ['user','user'] : ['ai','user']
     }))
 }
 
@@ -30,7 +33,6 @@ export function spreadRocks(board, usersPointsFun, hole, playerId) {
     tmpBoard[playerHoleId - 1][hole.id].k = 0;
     let stopCondition = hole.k;
     for (let i = 1; i <= stopCondition; i++) {
-        console.log(i, ((hole.id + 1 + i) % 7) - 1, stopCondition, playerHoleId)
         if((hole.id + i + 1) % 7 === 0) {
             if(playerHoleId === playerId) {
                 usersPointsFun(playerHoleId, 1);
@@ -41,11 +43,9 @@ export function spreadRocks(board, usersPointsFun, hole, playerId) {
             playerHoleId = togglePlayerId(playerHoleId);
         }
         else {
-            console.log(tmpBoard[playerHoleId - 1][((hole.id + 1 + i) % 7) - 1].k, "-", tmpBoard[playerHoleId - 1][((hole.id + 1 + i) % 7) - 1].k+1);
             tmpBoard[playerHoleId - 1][((hole.id + 1 + i) % 7) - 1].k++;
         }
         if(stopCondition === i && playerHoleId === playerId && (hole.id + i + 1)%7 !== 0 && tmpBoard[playerHoleId - 1][((hole.id + i + 1) % 7) - 1].k === 1 && tmpBoard[togglePlayerId(playerHoleId) - 1][7 - ((hole.id + i + 1) % 7) - 1].k > 0) {
-            console.log("steal");
             usersPointsFun(playerId, tmpBoard[togglePlayerId(playerHoleId) - 1][7 - ((hole.id + i + 1) % 7) - 1].k + tmpBoard[playerHoleId - 1][((hole.id + i + 1) % 7) - 1].k)
             tmpBoard[togglePlayerId(playerHoleId) - 1][7 - ((hole.id + i + 1) % 7) - 1].k = 0;
             tmpBoard[playerHoleId - 1][((hole.id + i + 1) % 7) - 1].k = 0;
