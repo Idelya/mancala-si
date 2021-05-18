@@ -18,8 +18,8 @@ function App() {
 
   const [refresh, setRefresh] = useState(0);
   const [mode, setMode] = useState('UservUser');
+  const [alfabeta, setAlfabeta] = useState(true);
   const [depth, setDepth] = useState(1);
-  const [siTurn, setSiTurn] = useState(false);
   const {
     playersScore
    } = api.getState();
@@ -73,7 +73,9 @@ function App() {
           <label for="UservAI">AI v Ai</label><br /> 
           <label for="depth">Depth:</label>
           <input type="number" id="depth" name="depth" min="1" max="10" value={depth} onChange={(e) => setDepth(e.target.value)} />
-        </form>} confirmText="Play" confirmFun={() => startGame(mode, depth)}/>}
+          <input type="checkbox" id="alfabeta" name="alfabeta" value="alfabeta" onChange={() => setAlfabeta(!alfabeta)} checked={alfabeta}/>
+          <label for="alfabeta">ai with alfabeta</label><br /> 
+        </form>} confirmText="Play" confirmFun={() => startGame(mode, depth, alfabeta)}/>}
       {gamestate === "end" && 
         <Modal 
           title="Finished" 

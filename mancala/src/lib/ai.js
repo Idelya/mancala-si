@@ -1,4 +1,4 @@
-import { reduce } from 'lodash';
+import { reduce, max, min } from 'lodash';
 import { pickHole, endCondition, togglePlayerId, spreadRocks, isFirstMove } from './gameControl';
 import { api } from './store';
 
@@ -23,7 +23,10 @@ function pickRandomHole(board, playerID) {
 
 export function moveAI(board, playerId) {
     console.log('moveAI ' + playerId)
-    const [, hole] = isFirstMove(board) ? pickRandomHole(board, playerId) : minmax(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth)
+    const [, hole] = isFirstMove(board) ? pickRandomHole(board, playerId) : (
+        api.getState().alfabeta ? 
+        alfabeta(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth, -1000, 1000) :
+        minmax(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth))
     if(!hole) {
         return;
     }
@@ -102,6 +105,82 @@ function minmax(board, hole, playersSore, forPlayerId, playerTurnId, depth) {
 
 }
 
+
+function alfabeta(board, hole, playersSore, forPlayerId, playerTurnId, depth, alfa, beta) {
+    if(endCondition(board) || depth === 0){
+        return [evaluationDiffScore(board, playersSore, forPlayerId, togglePlayerId(forPlayerId)), hole]
+    }
+
+    let tmpAlfa = alfa
+    let tmpBeta = beta
+
+    if(forPlayerId === playerTurnId) { //maxim
+        let maxEval = -1000
+        let maxH = null
+
+        let filtered =   board[playerTurnId - 1].filter(h => h.k > 0);
+        for (let i = 0; i < filtered.length; i++) {
+                const h = filtered[i];
+               let currPlayerScore = playersSore[playerTurnId - 1]
+               const tmpBoard = spreadRocks(board, (playerTurnId, rocks) => { 
+                    currPlayerScore = currPlayerScore + rocks 
+                }, h, playerTurnId)
+               const [e, tmpH] =  minmax(
+                    tmpBoard, 
+                    h, 
+                    playerTurnId === 1 ? [currPlayerScore, playersSore[1]] : [playersSore[0], currPlayerScore], 
+                    forPlayerId, 
+                    (h.k + h.id + 8) % 14 === 0 ? playerTurnId : togglePlayerId(playerTurnId),
+                    (h.k + h.id + 8) % 14 === 0 ? depth : depth - 1 // policzymy nastepny ruch jako jedna ture
+                )
+                if (e > maxEval) {
+                    maxH = tmpH
+                    maxEval = e
+                }
+
+                tmpAlfa = max([tmpAlfa, maxEval]) 
+                
+                if(tmpBeta <= tmpAlfa){ 
+                    break
+                }
+                //console.log(`player: ${playerTurnId}`, e, maxEval, tmpH, maxH, tmpBoard, currPlayerScore)
+        }
+        return [maxEval, hole || maxH];
+    }
+    else { //minim
+        let minEval = 1000 
+        let minH = null
+        let filtered =   board[playerTurnId - 1].filter(h => h.k > 0);
+        for (let i = 0; i < filtered.length; i++) {
+                const h = filtered[i];
+               let currPlayerScore = playersSore[playerTurnId - 1]
+               const tmpBoard = spreadRocks(board, (playerTurnId, rocks) => { 
+                currPlayerScore = currPlayerScore + rocks 
+            }, h, playerTurnId)
+               const [e, tmpH] =  minmax(
+                    tmpBoard, 
+                    h, 
+                    playerTurnId === 1 ? [currPlayerScore, playersSore[1]] : [playersSore[0], currPlayerScore], 
+                    forPlayerId, 
+                    (h.k + h.id + 8) % 14 === 0 ? playerTurnId : togglePlayerId(playerTurnId),
+                    (h.k + h.id + 8) % 14 === 0 ? depth : depth - 1// policzymy nastepny ruch jako jedna ture
+                )
+                if (e < minEval) {
+                    minH = tmpH
+                    minEval = e
+                } 
+                tmpBeta = min([tmpBeta, minEval])
+                
+                if(tmpBeta <= tmpAlfa){ 
+                    break
+                }
+
+                //console.log(`player: ${playerTurnId}`, e, minEval, tmpH, minH, tmpBoard, currPlayerScore)
+            }
+        return [minEval, hole || minH]; 
+    }
+
+}
 function evaluationDiffScore(board, scores, playersMax, playersMin) {
     return scores[playersMax - 1] - scores[playersMin - 1];
 }

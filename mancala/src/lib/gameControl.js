@@ -1,13 +1,14 @@
 
 import { api, clearStore } from './store';
 import { cloneDeep, every, sumBy } from "lodash";
-export function startGame(mode, depth) {
+export function startGame(mode, depth, alfabeta) {
     clearStore();
 
     api.setState(() => ({
         gamestate: "play",
         playerIdTurn: 2,
         gameMode: mode,
+        alfabeta: alfabeta,
         depth: depth,
         playersType: mode === "UservUser" ? ['user','user'] : ( mode === "UservAI" ? ['ai','user'] : ['ai', 'ai']),
     }))

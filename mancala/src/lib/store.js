@@ -13,6 +13,8 @@ export const [useStore, api] = create(() => {
     depth: 1,
     board: initBoard(4, 6),
     gameMode: "UservUser",
+    alfabeta: true,
+    logs: [[],[]],
     refresh: 0
   };
 });
@@ -25,6 +27,7 @@ export function clearStore() {
       playersScore: [0, 0],
       playerIdTurn: null,
       board: initBoard(4, 6),
+      logs: [[],[]],
       refresh: 0
     })
 });
