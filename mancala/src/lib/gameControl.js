@@ -9,7 +9,7 @@ export function startGame(mode, depth) {
         playerIdTurn: 2,
         gameMode: mode,
         depth: depth,
-        playersType: mode === "UservUser" ? ['user','user'] : ['ai','user']
+        playersType: mode === "UservUser" ? ['user','user'] : ( mode === "UservAI" ? ['ai','user'] : ['ai', 'ai']),
     }))
 }
 
@@ -86,4 +86,8 @@ export function endGame(){
             gamestate: "end",
         })
     });
+}
+
+export function isFirstMove(board) {
+    return every(board[0], ['k', 4]) && every(board[1], ['k', 4])
 }

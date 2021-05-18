@@ -1,5 +1,5 @@
 import { reduce } from 'lodash';
-import { pickHole, endCondition, togglePlayerId, spreadRocks } from './gameControl';
+import { pickHole, endCondition, togglePlayerId, spreadRocks, isFirstMove } from './gameControl';
 import { api } from './store';
 
 function getRandomInt(max) {
@@ -14,18 +14,16 @@ function pickRandomHole(board, playerID) {
     let random =  getRandomInt(n);
 
     for (let i = 0; i<= random; i++) {
-        console.log(board[playerID - 1][i].k, random)
         if (board[playerID - 1][i].k === 0) {
             random++;
         }
     }
-    return random;
+    return [null, board[playerID - 1][random]];
 }
 
 export function moveAI(board, playerId) {
-    console.log('moveAI')
-    //const holeId = pickRandomHole(board, playerId);
-    const [, hole] = minmax(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth)
+    console.log('moveAI ' + playerId)
+    const [, hole] = isFirstMove(board) ? pickRandomHole(board, playerId) : minmax(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth)
     if(!hole) {
         return;
     }
@@ -40,7 +38,6 @@ export function moveAI(board, playerId) {
 }
 
 function highlightHole(hole) {
-    console.log(`hole-${hole.playerId}-${hole.id}`);
     document.getElementById(`hole-${hole.playerId}-${hole.id}`)?.classList.add("active");
     setTimeout(function(){ document.getElementById(`hole-${hole.playerId}-${hole.id}`)?.classList.remove("active") }, 1000);
 }
@@ -53,7 +50,6 @@ function minmax(board, hole, playersSore, forPlayerId, playerTurnId, depth) {
     if(forPlayerId === playerTurnId) { //maxim
         let maxEval = -1000
         let maxH = null
-        console.log(board)
         board[playerTurnId - 1].filter(h => h.k > 0).forEach(
             (h) => {
                let currPlayerScore = playersSore[playerTurnId - 1]
@@ -72,7 +68,7 @@ function minmax(board, hole, playersSore, forPlayerId, playerTurnId, depth) {
                     maxH = tmpH
                     maxEval = e
                 }
-                console.log(`player: ${playerTurnId}`, e, maxEval, tmpH, maxH, tmpBoard, currPlayerScore)
+                //console.log(`player: ${playerTurnId}`, e, maxEval, tmpH, maxH, tmpBoard, currPlayerScore)
             }
         )
         return [maxEval, hole || maxH];
@@ -98,7 +94,7 @@ function minmax(board, hole, playersSore, forPlayerId, playerTurnId, depth) {
                     minH = tmpH
                     minEval = e
                 }
-                console.log(`player: ${playerTurnId}`, e, minEval, tmpH, minH, tmpBoard, currPlayerScore)
+                //console.log(`player: ${playerTurnId}`, e, minEval, tmpH, minH, tmpBoard, currPlayerScore)
             }
         )
         return [minEval, hole || minH]; 
