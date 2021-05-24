@@ -1,6 +1,6 @@
 import { reduce, max, min } from 'lodash';
 import { pickHole, endCondition, togglePlayerId, spreadRocks, isFirstMove } from './gameControl';
-import { api } from './store';
+import { api, measureTime, addLog } from './store';
 
 function getRandomInt(max) {
     return Math.floor(Math.random() * max);
@@ -23,13 +23,17 @@ function pickRandomHole(board, playerID) {
 
 export function moveAI(board, playerId) {
     console.log('moveAI ' + playerId)
-    const [, hole] = isFirstMove(board) ? pickRandomHole(board, playerId) : (
+    const method = isFirstMove(board) ? () => pickRandomHole(board, playerId) : (
         api.getState().alfabeta ? 
-        alfabeta(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth, -1000, 1000) :
-        minmax(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth))
+        () => alfabeta(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth, -1000, 1000) :
+        () => minmax(board, null, api.getState().playersScore, playerId, playerId, api.getState().depth));
+    const [[, hole], time] = measureTime(method)
+
     if(!hole) {
         return;
     }
+    
+    addLog(playerId, time,'', hole, isFirstMove(board) ? "pickRandomHole" : (api.getState().alfabeta ? "alfabeta" : "minmax"))
     highlightHole(hole);
     console.log(hole)
     pickHole(hole);
@@ -131,7 +135,9 @@ function alfabeta(board, hole, playersSore, forPlayerId, playerTurnId, depth, al
                     playerTurnId === 1 ? [currPlayerScore, playersSore[1]] : [playersSore[0], currPlayerScore], 
                     forPlayerId, 
                     (h.k + h.id + 8) % 14 === 0 ? playerTurnId : togglePlayerId(playerTurnId),
-                    (h.k + h.id + 8) % 14 === 0 ? depth : depth - 1 // policzymy nastepny ruch jako jedna ture
+                    (h.k + h.id + 8) % 14 === 0 ? depth : depth - 1, // policzymy nastepny ruch jako jedna ture
+                    tmpAlfa,
+                    tmpBeta
                 )
                 if (e > maxEval) {
                     maxH = tmpH
@@ -163,7 +169,9 @@ function alfabeta(board, hole, playersSore, forPlayerId, playerTurnId, depth, al
                     playerTurnId === 1 ? [currPlayerScore, playersSore[1]] : [playersSore[0], currPlayerScore], 
                     forPlayerId, 
                     (h.k + h.id + 8) % 14 === 0 ? playerTurnId : togglePlayerId(playerTurnId),
-                    (h.k + h.id + 8) % 14 === 0 ? depth : depth - 1// policzymy nastepny ruch jako jedna ture
+                    (h.k + h.id + 8) % 14 === 0 ? depth : depth - 1,// policzymy nastepny ruch jako jedna ture
+                    tmpAlfa,
+                    tmpBeta
                 )
                 if (e < minEval) {
                     minH = tmpH

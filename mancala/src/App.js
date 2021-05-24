@@ -26,7 +26,7 @@ function App() {
    const [currPlayer, setPlayerIdTurn] = useState(api.getState().playerIdTurn);
 
    useSubscribe(
-    ({ playerIdTurn, gamestate }) => {
+    ({ playerIdTurn }) => {
      setPlayerIdTurn(playerIdTurn);
     },
     ['playerIdTurn'],
@@ -43,6 +43,15 @@ function App() {
      [currPlayer],
    );
 
+   useEffect(() => {
+    if(currPlayer===2) {
+      api.setState(({rounds}) => {
+        return {
+            rounds: rounds + 1,
+        }
+      });
+    }
+   }, [currPlayer])
   useSubscribe(
     ({ board, gamestate  }) => {
       if(endCondition(board) && gamestate === 'play') {
@@ -70,7 +79,7 @@ function App() {
           <input type="radio" id="UservAI" name="UservAI" value="UservAI" onChange={(e) => setMode(e.target.value)} checked={mode === "UservAI"}/>
           <label for="UservAI">User v Ai</label><br /> 
           <input type="radio" id="AIvAI" name="AIvAI" value="AIvAI" onChange={(e) => setMode(e.target.value)} checked={mode === "AIvAI"}/>
-          <label for="UservAI">AI v Ai</label><br /> 
+          <label for="AIvAI">AI v Ai</label><br /> 
           <label for="depth">Depth:</label>
           <input type="number" id="depth" name="depth" min="1" max="10" value={depth} onChange={(e) => setDepth(e.target.value)} />
           <input type="checkbox" id="alfabeta" name="alfabeta" value="alfabeta" onChange={() => setAlfabeta(!alfabeta)} checked={alfabeta}/>

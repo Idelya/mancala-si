@@ -1,5 +1,5 @@
 
-import { api, clearStore } from './store';
+import { api, clearStore, resultsOfGame } from './store';
 import { cloneDeep, every, sumBy } from "lodash";
 export function startGame(mode, depth, alfabeta) {
     clearStore();
@@ -78,11 +78,14 @@ export function sumRockInRow(board, palyerId) {
 }
 
 export function endGame(){
-
-    api.setState(({board}) => {
+    
+    console.log('endGame');
+    api.setState(({board, logs}) => {
         giveRocks(1, sumRockInRow(board, 1))
         giveRocks(2, sumRockInRow(board, 2))
-        
+        console.log(logs);
+        console.log(resultsOfGame());
+        console.log("rounds:" + api.getState().rounds);
         return({
             gamestate: "end",
         })

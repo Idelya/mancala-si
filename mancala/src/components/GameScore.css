@@ -4,7 +4,7 @@
     display: flex;
     color: rgb(255, 255, 255);
     outline: 0px;
-    width: 100px;
+    width: 150px;
 }
 
 .active {
@@ -17,4 +17,8 @@
 
 .player2 {
     background:rgb(177, 0, 44);
+}
+
+.score_boards {
+    color: white;
 }
