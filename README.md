@@ -1,1 +1,1 @@
-# mancala web game using artificial intelligence
+# mancala web game
